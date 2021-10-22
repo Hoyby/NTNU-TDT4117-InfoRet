@@ -542,9 +542,107 @@ Instead of using a full text representation (using all the words as index terms)
 - **Stemming:** stem the words to their root form (Eg. Running -> Run). This might hurt precision as you might stem two non-semantically related words with the same root form. (Stemming ~ Lemmatization -> reducing to leximes).
 - **Stopword removal:** Removes function words (eg. prepositions, pronouns, conjunctions). May also include single letters, digit and other common terms.
 
+#### Lexical analysis
+
+_Numbers_ are of little value alone and should be removed. Combinations of numbers and words could be kept. _Hyphens_ (dashes) between words should be replaced with whitespace. _Punctuation marks_ are usually removed, except when dealing with program code etc. To deal with the _case of letters_; convert all text to either upper or lower case.
+
+#### Stopword elimination
+
+Stopwords are words occurring in over 80% of the document collection. These are not good candidates for index terms and should be removed before indexing. (Can reduce the index by 40%) This often includes words as articles, prepositions, conjunctions. Some verbs, adverbs, adjectives. Lists of popular stopwords can be found on the Internet.
+
+#### Stemming
+
+The idea of stemming is to let any conjugation and plurality of a word produce the same result in a query. This improves the retrieval performance and reduce the index size. There are four types of stemming: _Affix removal, Table Lookup, Successor variety, N-grams_.
+Affix removal is the most intuitive, simple and effective and is the focus of the course, with use of the _Porter Algorithm_.
+
+#### Index term selection
+
+Instead of using a full text representation (using all the words as index terms) we often select the terms to be used. This can be done manually, by a specialist, or automatically, by identifying _noun groups_. Most of the semantics in a text is carried by the noun words, but not often alone (e.g. _computer science_). A noun group are nouns that have a predefined maximum distance from each other in the text. (syntactic distance)
+
+#### Thesauri
+
+To assist a user for proper query terms you can construct a Thesauri. This provides a hierarchy that allows the broadening and narrowing of a query. It is done by creating a list of important words in a given domain. For each word provide a set of related words, derived from synonymity relationship.
+
+### Huffman coding
+
+Huffman coding is a prefix coding for lossless data compression, commonly used on text to compress, or code, words or characters. It assignes variable length bit-codes to a word or character (called node), where the shortest code is assigned to the most frequent node. The codes are defined by a _Huffman tree_.
+
+#### Normal Huffman tree
+
+A normal Huffman tree is build by sorting the nodes after frequencies. Then the two lowest nodes are joined, and their combined frequency is put back in the sorted queue. An example can be seen below:
+
+TODO: image
+
+The codes can be extracted from the tree by following the edges. Left edge: 0, right edge: 1.
+
+The shortcoming of the normal Huffman tree is how it handles equal frequencies. If two nodes have the same frequency, then one of them is chosen randomly. This gives potentionally multiple, equally correct, Huffman trees from the same set of input. To cope with this we can define a _Canonical_ Huffman tree.
+
 </br></br></br>
 
 # Indexing and Searching <a name="c5"></a>
+
+## Inverted Indexes
+
+**Inverted** means that you can reconstruct the text from the index.
+
+**Vocabulary**: the set of all different words in the text. Low space requirement, usually kept in memory.
+
+**Occurrences**: the (position of) words in the text. More space requirement, usually kept on disk.
+
+**Basic Inverted Index**: The oldest and most common index. Keeps track of terms; in _which_ document and _how many_ times it occur.
+
+**Full Inverted Index**: This keeps track of the same things as the basic index, in addition to _where_ in the document the terms occurs (position).
+
+**Block addressing** can be used to reduce space requirements. This is done by dividing text into blocks and let the occurrences point to the blocks.
+
+**Searching** in inverted indexes are done in three steps:
+
+1. **Vocabulary search** - words in queries are isolated and searched separately.
+2. **Retrieval of occurrences** - retrieving occurrence of all the words.
+3. **Manipulation of occurrences** - occurrences processed to solve phrases, proximity or Boolean operations.
+
+**Ranked retrieval**: When dealing with _weight-sorted_ inverted lists we want the _best_ result. Sequentially searching through all the documents are time consuming, we just want the _top-k_ documents. This is trivial with a single word query; the list is already sorted and you return the first _k_-documents. For other query we need to merge the lists. (see _Persin’s algorithm_).
+
+When **constructing** a full-text inverted index there are two sets of algorithms and methods: **Internal Algorithms** and **External Algorithms**. The difference is wether or not we can store the text and the index in internal, main memory. The former is relatively simple and low-cost, while the latter needs to write partial indexes to disk and then merge them to one index file.
+
+In general, there are three different ways to **maintain** an inverted index:
+
+- **Rebuild**, simple on small texts.
+- **Incremental updates**, done while searching only and when needed.
+- **Intermittent merge**, new documents are indexed and the new index is merged with the existing. This is, in general, the best solution.
+
+Inverted indexes can be **compressed** in the same way as documents (chapter 6.8). Some popular coding schemes are: _Unary_, _Elias_-$\gamma$, _Elias_-$\delta$ and _Golomb_.
+
+**Heaps’ Law** estimates the number of distinct words in a document or collection. Predicting the growth of the vocabulary size.
+$V = Kn^\beta$, where _n_ is the size of the document or collection (number of words), and $10 < K < 100, 0< \beta < 1$
+
+**Zipf’s law** estimates the distribution of words across documents in the collection (approximate model). It states that if $t_1$ is the most common word in the collection, $t_2$ the next most common, and so on, then the frequency of $f_i$ of the _i_-th most common word is proportional to $\frac{1}{i}$. That is: $f_i = \frac{c}{i}$, where _c_ is a constant. (?)
+
+## 9.3 Signature Files
+
+Signature files are word-oriented index structures based on hashing. It has a poorer performance than Inverted indexes, since it forces a sequential search over the index, but is suitable for small texts.
+
+A signature file uses a **hash function** (or «signature») that maps word blocks to bit masks of a given size. The mask is obtained by bitwise OR-ing the signatures of all the words in the text block.
+
+To **search** a signature file you hash a word to get a bit mask, then compare that mask with each bit mask of all the text blocks. Collect the candidate blocks and perform a sequential search for each.
+
+## 9.4 Suffix Trees and Suffix Arrays
+
+**Suffix trees**
+This is a structure used to index, like the Inverted Index , when dealing with _large alphabets_ (Chinese Japanese, Korean), _agglutinating languages_ (Finnish, German).
+A **Suffix trie** is an ordered tree data structure built over the suffixes of a string. A **Suffix tree** is a compressed trie. And a **Suffix array** is a «flattened» tree.
+These structures handles the whole text as a string, dividing it into suffixes. Either by character or word. Each suffix is from its start point to the end of the text, making them smaller and smaller.
+e.g.:
+
+- mississippi (1)
+- ississippi (2)
+- …
+- pi (10)
+- i (11)
+
+These structures makes it easier to search for substrings but they have large **space requirements**: A tree takes up to 20 times the space of the text and an array about 4 times the text space.
+
+
 
 </br></br></br>
 
