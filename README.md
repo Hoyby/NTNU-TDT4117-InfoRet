@@ -538,48 +538,100 @@ Term selection:
 
 Instead of using a full text representation (using all the words as index terms) we often select the terms to be used. This can be done manually, by a specialist, or automatically, by identifying noun groups. Most of the semantics in a text is carried by the noun words, but not often alone (e.g. computer science). A noun group are nouns that have a predefined maximum distance from each other in the text. (syntactic distance)
 
-- **Normalization:** remove apostrophes, periods, and commas. Also convert to lowercase.
-- **Stemming:** stem the words to their root form (Eg. Running -> Run). This might hurt precision as you might stem two non-semantically related words with the same root form. (Stemming ~ Lemmatization -> reducing to leximes).
-- **Stopword removal:** Removes function words (eg. prepositions, pronouns, conjunctions). May also include single letters, digit and other common terms.
+During the preprocessing phase one might apply one or more of the operations below:
 
-#### Lexical analysis
+- **Lexical analysis:** Identifies words, and converts the stream of characters into a stream of tokens (words).
+- **Stopword removal:** Removes function words (eg. prepositions, pronouns, conjunctions). May also include single letters, digit and other common terms.
+- **Stemming:** Stems the words to their root form (also called leximes) (Eg. connected, connecting, connection -> connect).
+- **Thesaurus:** Provides a vocabulary of synonyms in the form of relationships between words. This helps the indexer and the searcher chose the same terms or phrases for a given concept, and thus aiding in returning relevant data
+- **Text compression:**
+
+## Lexical analysis
+
+- **Normalization:** remove apostrophes, periods, and commas. Also convert to lowercase.
 
 _Numbers_ are of little value alone and should be removed. Combinations of numbers and words could be kept. _Hyphens_ (dashes) between words should be replaced with whitespace. _Punctuation marks_ are usually removed, except when dealing with program code etc. To deal with the _case of letters_; convert all text to either upper or lower case.
 
-#### Stopword elimination
+- Reduces size
+
+## Stopword elimination
 
 Stopwords are words occurring in over 80% of the document collection. These are not good candidates for index terms and should be removed before indexing. (Can reduce the index by 40%) This often includes words as articles, prepositions, conjunctions. Some verbs, adverbs, adjectives. Lists of popular stopwords can be found on the Internet.
 
-#### Stemming
+- Reduces size
+
+## Stemming
 
 The idea of stemming is to let any conjugation and plurality of a word produce the same result in a query. This improves the retrieval performance and reduce the index size. There are four types of stemming: _Affix removal, Table Lookup, Successor variety, N-grams_.
 Affix removal is the most intuitive, simple and effective and is the focus of the course, with use of the _Porter Algorithm_.
 
-#### Index term selection
+This might hurt precision as you might stem two non-semantically related words with the same root form. (Stemming ~ Lemmatization -> reducing to leximes).
 
-Instead of using a full text representation (using all the words as index terms) we often select the terms to be used. This can be done manually, by a specialist, or automatically, by identifying _noun groups_. Most of the semantics in a text is carried by the noun words, but not often alone (e.g. _computer science_). A noun group are nouns that have a predefined maximum distance from each other in the text. (syntactic distance)
+- Reduces size
+- Hurts precision because users can no longer target just a particular form
 
-#### Thesauri
+## Thesauri
 
 To assist a user for proper query terms you can construct a Thesauri. This provides a hierarchy that allows the broadening and narrowing of a query. It is done by creating a list of important words in a given domain. For each word provide a set of related words, derived from synonymity relationship.
 
-### Huffman coding
+- Hard to distinguish between concepts that use the same word (apple is both a fruit and a company)
+- Might increase recall without increasing precision, eg. a user inputs a spesific term for the concept, but the thesaurus expands using synonyms providing a bigger set, but not necessarily relevant for the user.
+
+## Compression
+
+### **Huffman encoding**
 
 Huffman coding is a prefix coding for lossless data compression, commonly used on text to compress, or code, words or characters. It assignes variable length bit-codes to a word or character (called node), where the shortest code is assigned to the most frequent node. The codes are defined by a _Huffman tree_.
 
-#### Normal Huffman tree
+The binary tree consists of edges `0:left` | `1:right`, intermidiate nodes, and leaf-nodes containing strings.
 
-A normal Huffman tree is build by sorting the nodes after frequencies. Then the two lowest nodes are joined, and their combined frequency is put back in the sorted queue. An example can be seen below:
+eg: _for my rose, a rose is a rose_
+Character | Frequency | Code
+:--: | :--: | :--:
+rose | 3 | 00
+a | 2 | 10
+, | 1 | 011
+my | 1 | 010
+is | 1 | 111
+for | 1 | 110
 
-TODO: image
+![huffman tree](img/hf_rose.jpg)
 
-The codes can be extracted from the tree by following the edges. Left edge: 0, right edge: 1.
+The operation of creating huffman trees
+
+1. merge the two smallest frequent symbols to make a node with the combined frequency as a value
+2. repeat
+
+Illustration:
+
+![create huffman tree](img/hf-create.png)
 
 The shortcoming of the normal Huffman tree is how it handles equal frequencies. If two nodes have the same frequency, then one of them is chosen randomly. This gives potentionally multiple, equally correct, Huffman trees from the same set of input. To cope with this we can define a _Canonical_ Huffman tree.
+
+### **Huffman tree Canonical form**
+
+The idea is the same, but instead of adding nodes and terms, the two lowest terms are always added together, and added to the tree on the left side.
+
+Example from above in canonical form:
+
+![huffman tree canonical](img/hf-canonical.png)
+
+### **Byte-Oriented Huffman tree**
+
+The tree has degree 256 instead of 2 and symbols are typically represented by <= 5 bytes, e.g. rose = ‘47 131 8’.
+
+- compressions/decompression is faster
+- trees have smaller heights
+- compression ratio degrades only a little bit
+- direct searching on a compressed text
 
 </br></br></br>
 
 # Indexing and Searching <a name="c5"></a>
+
+### Index term selection
+
+Instead of using a full text representation (using all the words as index terms) we often select the terms to be used. This can be done manually, by a specialist, or automatically, by identifying _noun groups_. Most of the semantics in a text is carried by the noun words, but not often alone (e.g. _computer science_). A noun group are nouns that have a predefined maximum distance from each other in the text. (syntactic distance)
 
 ## Inverted Indexes
 
@@ -641,8 +693,6 @@ e.g.:
 - i (11)
 
 These structures makes it easier to search for substrings but they have large **space requirements**: A tree takes up to 20 times the space of the text and an array about 4 times the text space.
-
-
 
 </br></br></br>
 
