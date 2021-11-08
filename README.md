@@ -629,10 +629,6 @@ The tree has degree 256 instead of 2 and symbols are typically represented by <=
 
 # Indexing and Searching <a name="c5"></a>
 
-### Index term selection
-
-Instead of using a full text representation (using all the words as index terms) we often select the terms to be used. This can be done manually, by a specialist, or automatically, by identifying _noun groups_. Most of the semantics in a text is carried by the noun words, but not often alone (e.g. _computer science_). A noun group are nouns that have a predefined maximum distance from each other in the text. (syntactic distance)
-
 ## Inverted Indexes
 
 **Inverted** means that you can reconstruct the text from the index.
@@ -665,10 +661,21 @@ In general, there are three different ways to **maintain** an inverted index:
 
 Inverted indexes can be **compressed** in the same way as documents (chapter 6.8). Some popular coding schemes are: _Unary_, _Elias_-$\gamma$, _Elias_-$\delta$ and _Golomb_.
 
-**Heaps’ Law** estimates the number of distinct words in a document or collection. Predicting the growth of the vocabulary size.
+### **Heaps’ Law**
+
+Estimates the number of distinct words in a document or collection. Predicting the growth of the vocabulary size. Heaps' law states that as more instance text is gathered, there will be diminishing returns in terms of discovery of the full vocabulary from which the distinct terms are drawn.
+
 $V = Kn^\beta$, where _n_ is the size of the document or collection (number of words), and $10 < K < 100, 0< \beta < 1$
 
-**Zipf’s law** estimates the distribution of words across documents in the collection (approximate model). It states that if $t_1$ is the most common word in the collection, $t_2$ the next most common, and so on, then the frequency of $f_i$ of the _i_-th most common word is proportional to $\frac{1}{i}$. That is: $f_i = \frac{c}{i}$, where _c_ is a constant. (?)
+### **Zipf’s law**
+
+Estimates the distribution of word frequencies across documents in the collection (approximate model). Zipf’s law states that the frequency of any word is inversely proportional to its rank in the frequency table. Thus the most frequent word will occur approximately twice as often as the second most frequent word, three times as often as the third most frequent word, etc.
+
+In other words if $t_1$ is the most common word in the collection, $t_2$ the next most common, and so on, then the frequency of $f_i$ of the _i_-th most common word is proportional to $\frac{1}{i}$.
+
+**Zipf’s law** to the left, **Heaps’ Law** to the right
+
+![huffman tree canonical](img/zipheaplaw.png)
 
 ## 9.3 Signature Files
 
