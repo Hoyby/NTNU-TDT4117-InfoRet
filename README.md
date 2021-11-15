@@ -705,6 +705,94 @@ These structures makes it easier to search for substrings but they have large **
 
 # Web Retrieval <a name="c6"></a>
 
+Three forms of searching:
+
+- Spesific queries -> hyperlink structure
+- Broad queries -> clasify web documents by subjects
+- Vague queries -> index positions of the web
+
+Problems with the data:
+
+- Distibuted data
+- High precentage of volatile data -> data is created and removed all the time
+- Large volume of data
+- Unstructured data (pdf, gif, jpg, etc.)
+- Redundant data (30% of pages are near duplicates)
+- Quality of data (poorly written, invalid, misspelling)
+- Heterogeneous data (languages, formats, types of data)
+
+## Search engines:
+
+### Centralized architecture:
+
+Crawler based.
+
+![Centralized architecture](img/CentralizedSearchEngine.jpg)
+
+- Robots Exclution Protocol tells the crawler to exclude pages from indexing (not always respected).
+
+Problems with centralized architecture:
+
+- Gathering data from the web, as the web is dynamic.
+- Communication lines (might be down then the crawler is crawling).
+- High load on the web server.
+
+</br>
+
+### Distributed architecture:
+
+![Distributed architecture](img/DistributedSearchEngine.jpg)
+
+Based on two elements:
+
+- Gatherers: Peridodically collect and extract index data from the web servers.
+- Brokers: Retrieve data from gatherers and update incrementally their indences.
+- Gatherers and Brokers communitcation is very flexible:
+  - gatherer to multiple brokers.
+  - Broker to broker.
+
+## Ranking
+
+**Ranking using hyperlinks information:**
+
+The number of incoming hyperlinks to a page represents the popularity or quality of the page.
+
+Three approaches:
+
+- WebQuery:
+- HITS:
+- PageRank:
+
+### WebQuery
+
+Takes an answer set, then ranks and extends based on the analysis of the hyperlinks.
+
+### HITS
+
+s: set of pages that are one link adjacent with the answer set.
+
+- **Authorities:** pages with high incoming links (in s)
+- **Hubs:** pages with high outgoing links (in s)
+
+Link weight and page score:
+
+- Link weight: similarity between the surrounding content and the query.
+- Page score: similarity between the page content and the query.
+
+Result: Better precision.
+
+### PageRank
+
+- **q**: probability that a user randomly jumps to the page.
+- **1 - q**: probability that a user follows a link to the page.
+- **L(a)**: number of outgoing links from page a.
+- **p1, ..., pn**: pages pointing to page a.
+
+![PageRank](img/PageRank.jpg)
+
+> T: total nr pages on the web graph, q is typically 0.15.\
+> PR(pi) is normalized by L(pi)
+
 </br></br></br>
 
 # Multimedia Information Retrieval <a name="c7"></a>
