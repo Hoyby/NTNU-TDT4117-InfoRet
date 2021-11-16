@@ -725,7 +725,11 @@ Problems with the data:
 
 ### Centralized architecture:
 
-Crawler based.
+Crawler based:
+
+1. Start with a set of popular URLs.
+2. Extract other URLs via links using recursive bfs or dfs search.
+3. If multiple crawlers are used it is difficult to coordinate not to visit the same URLs. The solution is to partition the crawlers into groups by domains, or country.
 
 ![Centralized architecture](img/CentralizedSearchEngine.jpg)
 
@@ -791,7 +795,12 @@ Result: Better precision.
 ![PageRank](img/PageRank.jpg)
 
 > T: total nr pages on the web graph, q is typically 0.15.\
-> PR(pi) is normalized by L(pi)
+> PR(pi) is normalized by L(pi)\
+
+> Higher score means higher ranking.
+
+Main differences between HITS and PageRank:
+HITS is based on returned results from the query while as page rank is based on a global ranking based on the ranking of other pages but independent of the query.
 
 </br></br></br>
 
