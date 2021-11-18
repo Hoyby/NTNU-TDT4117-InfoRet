@@ -2,24 +2,27 @@
 
 ## Chapters:
 
-1. [_Modeling_](#c1)
-   1. [_IR Models_](#c1.1)
-   2. [_Classical Similarity Models_](#c1.2)
-      1. [_Boolean model_](#c1.2.1)
-      2. [_Vector Space model_](#c1.2.2)
-      3. [_Probabilistic model_](#c1.2.3)
-   3. [_Alternative Probabilistic Models_](#c1.3)
-      1. [_BM25_](#c1.3.1)
-      2. [_Language Model_](#c1.3.2)
-2. [_Retrieval Evaluation_](#c2)
-3. [_Relevance Feedback and Query Expansion_](#c3)
-4. [_Text Operation_](#c4)
-5. [_Indexing and Searching_](#c5)
-6. [_Web Retrieval_](#c6)
-7. [_Multimedia Information Retrieval_](#c7)
-   1. [_Image Retrieval_](#c7.1)
-   2. [_Video Retrieval_](#c7.2)
-   3. [_Audio Retrieval_](#c7.3)
+1. [_Introduction_](#c0)
+   1. [_High level Architecture_](#c1)
+2. [_Modeling_](#c2)
+   1. [_IR Models_](#c3)
+   2. [_Weighting_](#c4)
+   3. [_Boolean model_](#c5)
+   4. [_Vector Space model_](#c6)
+   5. [_Probabilistic model_](#c7)
+   6. [_Alternative Probabilistic Models_](#c8)
+      1. [_BM25_](#c9)
+      2. [_Language Model_](#c10)
+3. [_Retrieval Evaluation_](#c11)
+   1. [_Precision & Recall_](#c12)
+4. [_Relevance Feedback and Query Expansion_](#c13)
+5. [_Text Operation_](#c14)
+6. [_Indexing and Searching_](#c15)
+7. [_Web Retrieval_](#c16)
+8. [_Multimedia Information Retrieval_](#c17)
+   1. [_Image Retrieval_](#c18)
+   2. [_Video Retrieval_](#c19)
+   3. [_Audio Retrieval_](#c20)
 
 ## Assignments:
 
@@ -102,17 +105,22 @@ TODO: insert links
 
 ## Weighting
 
-**Term and Document frequency | TF-IDF:**
-
 - cf (collection frequency): number of times term `t` occurs in collection
 - df (document frequency): number of documents `d` in which the term `t` occurs.
-- tf (term frequency): number of times term `t` occurs in document `d`
 
   Naturally: df < cf
 
-The **raw frequency** of a term in a document (tf) is simply how many times it occurs, but the relevance of the document does not increase proportionally with the term frequency (10 more occurrences does not mean 10 times more relevant). **Log frequency** weighting lowers this ratio:
+TODO: introduction to weighting
 
-![tf_{i,j} = \left{ 
+A good index term is charachterized by how well it represents the document, how well it relates to the subject, and the degree of discimination.
+
+### TF
+
+- tf (term frequency): number of times term `t` occurs in document `d`
+
+The **raw frequency** of a term in a document (tf) is simply how many times it occurs, but the relevance of the document does not increase proportionally with the term frequency (10 more occurrences does not mean 10 times more relevant). There therefore use **log frequency** weighting to lowers this ratio.
+
+![tf_{i,j} = \left{
     \begin{array}{rr}
         1+\log f_{i,j} \quad \text{if } f_{i,j} > 0 
         0 \quad \text{otherwise}
@@ -124,26 +132,25 @@ The **raw frequency** of a term in a document (tf) is simply how many times it o
         0 \quad \text{otherwise}
     \end{array} \right.$$ -->
 
-The logarithm base is not important, just be concise with the choice.
-We want high scores for frequent terms, but we want even higher score for a rare, descriptive term. These terms introduce a good discrimination value, and their score is captured in the **Inverse Document Frequency (IDF)**:
+_The logarithm base is not important, just be concise with the choice._
+
+### IDF
+
+IDF provides a foundation for modern term weighting schemes, and is used for ranking in almost all IR systems.
+
+The basic idea is that we want high scores for frequent terms, but we want even higher score for a rare, descriptive term. These terms introduce a good discrimination value, and their score is captured in the **Inverse Document Frequency (IDF)** descirbed by:
 
 ![idf_i = \log \frac{N}{n_i}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+idf_i+%3D+%5Clog+%5Cfrac%7BN%7D%7Bn_i%7D)
 
 <!-- $$ idf_i = \log \frac{N}{n_i} $$ -->
 
-Where $N$ is the total number of documents in the collection and $n_i$ is the number of documents which contain keyword $k_i$.
+Where `N` is the total number of documents in the collection and n<sub>i</sub> is the number of documents which contain keyword k<sub>i</sub>.
 
-IDF provides a foundation for modern term weighting schemes, and is used for ranking in almost all IR systems. </br>
+ </br>
 
-A good index term is charachterized by how well it represents the document, how well it relates to the subject, and the degree of discimination.
+### TF-IDF
 
-> **_!Exam question_** - Explain IDF
->
-> **_!Exam question_** - Explain the characterisics of a good index term
-
-</br>
-
-If we combine these two scores we get the best known weighting scheme in IR: **the TF-IDF weighting scheme**. This measure increases with the number of occurrences within a document and with the rarity of the terms in the collection.
+If we combine these two scores we get the best known weighting scheme in IR: **the TF-IDF weighting scheme**. This measure increases with the number of occurrences within a document and with the rarity of the terms in the collection (i.e. high discrimination value).
 
 ![w_{i,j} = \left{
 	\begin{array}{r r}
@@ -157,6 +164,10 @@ If we combine these two scores we get the best known weighting scheme in IR: **t
     	0 	\quad \text{otherwise}
   \end{array} \right.$$ -->
 
+> **_!Exam question_** - Explain IDF
+
+> **_!Exam question_** - Explain the characterisics of a good index term
+
 </br>
 
 ## Boolean Model <a name="c1.2.1"></a>
@@ -165,48 +176,58 @@ If we combine these two scores we get the best known weighting scheme in IR: **t
 
 **Basic Assumption of Boolean Model**:
 
-|         Pros         |                 Cons                  |
-| :------------------: | :-----------------------------------: |
-|        Simple        |          No partial matching          |
-|  Easy to understand  |              No ranking               |
-|  Result predictable  |      May not consider semantics       |
-| Efficient processing |    Query formulation is difficult     |
-|                      | Simple queries usually dont work well |
+|         Pros         |                          Cons                           |
+| :------------------: | :-----------------------------------------------------: |
+|        Simple        |                   No partial matching                   |
+|  Easy to understand  |                       No ranking                        |
+|  Result predictable  |            Assumes all terms are independent            |
+| Efficient processing | Query formulation is difficult (and requires knowledge) |
+|                      |          Simple queries usually dont work well          |
 
 **Basic principle:**
 
-1. An index term is either present(1) or absent(0) in the document
-2. All index terms provide equal evidence with respect to information needs.
-3. Queries are Boolean combinations of index terms.
-   1. X AND Y: represents doc that contains both X and Y
-   2. X OR Y: represents doc that contains either X or Y
-   3. NOT X: represents the doc that do not contain X
+- An index term is either present(1) or absent(0) in the document.
+- All index terms provide equal evidence with respect to information needs.
+- Queries are Boolean combinations of index terms.
+  - X AND Y: represents doc that contains both X and Y
+  - X OR Y: represents doc that contains either X or Y
+  - NOT X: represents the doc that do not contain X
 
 Uses a `term-document` matrix to find matches in the queries.
 
-The ratio between no. of columns (vocabulary) and actually used words (1’s in the matrix) is very low. This will result in a matrix with a LOT of 0’s, and therefore a lot of memory usage, storing no useful information. In practice we therefore only save the entries having 1’s in a form of adjacency list.
+![Term Document Matrix](img/TDM.png)
+
+The ratio between the number of terms and actually used words (1’s in the matrix) is very low. This will result in a matrix with a LOT of 0’s, and therefore a lot of memory usage, storing no useful information. In practice we therefore only save the entries having 1’s in a form of adjacency list.
+
+> **_!Exam question_** - Explain the boolean model and why it has limited usecases.
+
+> **_!Exam question_** - Explain why the boolean model can be called a data-retrieval model.
 
 </br>
 
-## Vector Space Model <a name="c1.2.2"></a>
+## Vector Space Model (VSM) <a name="c1.2.2"></a>
 
 </br>
 
-|          Pros           |            Cons             |
-| :---------------------: | :-------------------------: |
-| Simple, easy to compute | Does not consider semantics |
-|    Partial matching     |   Similarity != relevance   |
-|         Ranking         |                             |
-|     Query expansion     |                             |
-| Easy query formulation  |                             |
+|          Pros           |               Cons                |
+| :---------------------: | :-------------------------------: |
+| Simple, easy to compute | Assumes all terms are independent |
+|    Partial matching     |      Similarity != relevance      |
+|         Ranking         |                                   |
+| Easy query formulation  |                                   |
+|        Efficient        |                                   |
 
-The **Ranking** in the Vector Space model is done by modeling the query and documents as vectors. The similarity between a query and a document is calculated with the **Cosine Similarity**:
+**Basic principle:**
+
+- All documents and queries are represented as vectors using term-weighting.
+- Term-weighting is done using the TF-IDF weighting scheme.
+- The similarity between two documents is determined by the **cosine similarity** of their vectors.
+
+**Cosine Similarity** basically measures how much the two vectors are "pointing in the same direction:
 
 ![sim(d_j , q) = \frac{\vec{d_j} \cdot \vec{q}}{\left|\vec{d_j}\right|\left|\vec{q}\right|} = \frac{\sum _{i=1}^t w_{ij}\cdot w_{iq} }{\sqrt{\sum _{i=1}^tw_{ij}^2}\cdot \sqrt{\sum _{i=1}^tw_{iq}^2}}](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+sim%28d_j+%2C+q%29+%3D+%5Cfrac%7B%5Cvec%7Bd_j%7D+%5Ccdot+%5Cvec%7Bq%7D%7D%7B%5Cleft%7C%5Cvec%7Bd_j%7D%5Cright%7C%5Cleft%7C%5Cvec%7Bq%7D%5Cright%7C%7D+%3D+%5Cfrac%7B%5Csum+_%7Bi%3D1%7D%5Et+w_%7Bij%7D%5Ccdot+w_%7Biq%7D+%7D%7B%5Csqrt%7B%5Csum+_%7Bi%3D1%7D%5Etw_%7Bij%7D%5E2%7D%5Ccdot+%5Csqrt%7B%5Csum+_%7Bi%3D1%7D%5Etw_%7Biq%7D%5E2%7D%7D)
 
 <!-- $$ sim(d_j , q) = \frac{\vec{d_j} \cdot \vec{q}}{\left|\vec{d_j}\right|\left|\vec{q}\right|} = \frac{\sum _{i=1}^t w_{ij}\cdot w_{iq} }{\sqrt{\sum _{i=1}^tw_{ij}^2}\cdot \sqrt{\sum _{i=1}^tw_{iq}^2}} $$ -->
-
-This basically measures how much the query vector and the document vector are "pointing in the same direction".
 
 A **Problem:** is that longer documents are more likely to be retrieved by a given query due to the number of words. The **Solution:** document length normalization.
 
@@ -216,12 +237,13 @@ A **Problem:** is that longer documents are more likely to be retrieved by a giv
 
 ## Classical Probabilistic Model <a name="c1.2.3"></a>
 
-|            Pros            |                 Cons                  |
-| :------------------------: | :-----------------------------------: |
-| Ranks based on probability |  Needs to guess the initial ranking   |
-|  Theoretically justified   |      Does not consider semantics      |
-|                            | Optimally requires relevance feedback |
-|                            |    May not work better in practice    |
+|             Pros             |                 Cons                  |
+| :--------------------------: | :-----------------------------------: |
+| Ranking based on probability |   Need to guess the initial ranking   |
+|       Partial matching       |   Assumes all terms are independent   |
+|   Theoretically justified    | Optimally requires relevance feedback |
+|                              |    May not work better in practice    |
+|                              |     Does not consider TF and IDF      |
 
 There exists a subset of the documents collection that are relevant to a given query. A probabilistic retrieval model ranks this set by the probability that the document is relevant to the query. The advantage of this model is that documents are ranked in decreasing order of their probability of being relevant. The main disadvantage is the need to guess the initial separation of documents into relevant and non-relevant sets.
 
@@ -237,12 +259,12 @@ There exists a subset of the documents collection that are relevant to a given q
 
 ### BM25 <a name="c1.3.1"></a>
 
-|               Pros               |            Cons             |
-| :------------------------------: | :-------------------------: |
-| Based on The Probabilistic Model |  Lots of hacks/heuristics   |
-|            Efficient             | Hard to improve and develop |
-| Often better results than TF-IDF | Estimation is not the best  |
-|                                  | Does not consider semantics |
+|               Pros               |               Cons                |
+| :------------------------------: | :-------------------------------: |
+| Based on The Probabilistic Model | Assumes all terms are independent |
+|         Partial matching         |    Estimation is not the best     |
+|                                  |                                   |
+|                                  |                                   |
 
 Extends the classic probabilistic model with information on term frequency and document length normalization. The ranking formula is a combination of the equation for BM11 and BM15, and can be written as
 
@@ -260,13 +282,18 @@ where $N$ is the total number of documents in the collection, and $n(q_i)$ is th
 
 </br>
 
-### Language Model <a name="c1.3.2"></a>
+### Language Model (LM) <a name="c1.3.2"></a>
 
-| Pros | Cons |
-| :--: | :--: |
-|      |      |
+|                      Pros                       |                      Cons                       |
+| :---------------------------------------------: | :---------------------------------------------: |
+|                Partial matching                 | Complex, especially assuming term co-dependency |
+|          Ranking based on probability           |  Hard to query phrases and boolean expressions  |
+| Does not assumes that all terms are independent |     Hard to consider user relevant feedback     |
+|                                                 |                                                 |
 
-Language modeling (LM) is the use of various statistical and probabilistic techniques to determine the probability of a given sequence of words occurring in a sentence. The idea is to define a language model for each document in the collection and use it to inquire about the likelihood of generating av given query, instead of using the query to predict the likelihood of observing a document.
+Language modeling (LM) is the use of various statistical and probabilistic techniques to determine the probability of a given sequence of words occurring in a sentence. The idea is to define a language model for each document in the collection and use it to inquire about the likelihood of generating av given query, instead of using the query to predict the likelihood of observing a document (as done in the probabilistic model).
+
+> **_!Exam question_** - Explain the difference between the language model and the probabilistic model.
 
 Example:
 
@@ -331,11 +358,15 @@ For short queries, the Dirichlet smoothing performs better than the Jelinek-Merc
 
 # Retrieval Evaluation <a name="c2"></a>
 
-User satisfaction can only be measured by relevance to an information need, not by relevance to queries
+User satisfaction can only be measured by relevance to an information need, not by relevance to queries.
+
+Evaluation scores are used to evaluate the performance of a IR-system.
+
+TODO: Write about TREC and GOV2
 
 ### **Precision & Recall**
 
-TODO: picture from https://en.wikipedia.org/wiki/Precision_and_recall
+![Precision & Recall](./img/Precisionrecall.svg)
 
 **Precision** is the fraction of retrieved documents that are relevant. \
 _Precision_=P(relevant|retrieved)
@@ -373,14 +404,12 @@ Precision and recall are complementary values and should always be reported toge
 
 ![FMeasure](./img/FMeasure.JPG)
 
-P = precision \
+P = precision\
 R = recall
 
 Combining precision and recall provides us with the **F-measure** (Harmonic Mean) where F symbols a good compromise between precision and recall:
 
 We use harmonic mean because when two numbers differ greatly, the HM is closer to the minimum than their Arithmetic Mean. This will reduce the score when precision and recall differs greatly.
-
-> **_!Exam question_** - Explain F-measure
 
 </br>
 
@@ -441,7 +470,7 @@ MAP<sub>2</sub> = (0.33 + 0.25 + 0.20) / 3 = 0.26
 
 MAP = (MAP<sub>1</sub> + MAP<sub>2</sub>) / 2 = (0.28 + 0.26) / 2 = 0.27
 
-### **R-precision:**
+### **R-precision (P@R):**
 
 In a search where there are R relevant documents, the R-precision is the fraction of relevant documents in the R first results. Or in other words: precision at the R-th position.
 
@@ -471,13 +500,16 @@ The ratio between the number of relevant documents found and the number of relev
 **Recall effort**\
 The ratio between the number of relevant documents the user expected to find and the number of documents examined in an attempt to find the expected relevant documents.
 
+> **_!Exam question_** - Explain three evaluation metrics (that is not precision or recall)
+
 </br></br></br>
 
 # Relevance Feedback and Query Expansion <a name="c3"></a>
 
 A process to improve the first formulation of a query to make it closer to the user intent. Often done iteratively (cyclic) based on feedback.
 
-**Query Expansion (QE)**: Information related to the query used to expand it. \
+**Query Expansion (QE)**: Information related to the query used to expand it.
+
 **Relevance Feedback (RF)**: Information on relevant documents explicitly provided from user to a query.
 
 A feedback cycle is composed of two basic steps:
@@ -497,17 +529,28 @@ Collecting explicit feedback information from users (in the classical way) is ex
 
 In the Web, user-clicks on search results constitute a source of feedback information from the user that the documents might be of interest in the context of the query. It does not necessarily indicate that the document is relevant to the query.
 
-### Rocchio Method (Vector Space Model)
+### Vector Space Model (VSM)
 
-The Rocchito model is based on the Vector Space Model and the basic idea is to reformulate the query such that it gets:
+- Standard Rocchio Method
+- Ide Regular
+- Ide 'dec hi'
 
-- Closer to the neighborhood of the relevant documents in the vector
-  space, and
+All three methods are quite simple and yields the same results; increased performance in the form of precision and recall. They all utilizes query expansion and term Re-weighting and are based on the same basic idea of reformulateing the query such that it gets:
+
+- Closer to the neighborhood of the relevant documents in the vector space
 - Away from the neighborhood of the non-relevant documents.
+
+The **difference** is:
+
+- Rocchio normalizes the number of relevant and non-relevant documents.
+- Ide Regular does not normalize.
+- Ide 'dec hi' uses the highest ranked non-relevant document, insted of the sum of all
 
 > **_!Exam question_** - Explain the Rocchio method
 
 </br>
+
+Ide Regular normaliserer disse leddene i det hele tatt.
 
 ### Probabilistic model
 
