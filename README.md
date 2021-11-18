@@ -24,52 +24,93 @@
 ## Assignments:
 
 - [x] [Øving 1](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_1)
-- [ ] [Øving 2](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_1)
-- [ ] [Øving 3](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_1)
-- [ ] [Øving 4](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_1)
-- [ ] [Øving 5](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_1)
+- [x] [Øving 2](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_2)
+- [x] [Øving 3](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_3)
+- [x] [Øving 4](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_4)
+- [ ] [Øving 5](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_5)
 
 </br></br></br>
 
+# Introduction <a name="c1"></a>
+
+Information Retrieval is a field of computer science that deals with the retrieval of information from a large collection of documents. The field is often used in the context of search engines, which are used to find relevant documents for a user’s query and information need.
+
+Information retrieaval includes retrieval of information in documents, Web pages, online catalogs, structured and semi-structured records and multimedia objects like pictures, videos, music, voicerecordings, etc. And the main **goal** is to maximize the number of relevant documents returned while minimizing the number of irrelevant documents returned. Due to the nature of languages this might requre the use of synonyms and other methods to find the best match and satisfy the user.
+
+It is important to differenciate between information retrieval and data retrieval:
+
+**_Information Retrieval:_** the process of retrieving information form a collection of data. The data is often unstructured and therefore requires fuzzy matching and will return a list of relevant documents.
+
+**_Data Retrieval:_** the process of retrieving data from a data source. This data is stored in a structured form in a database and therefore requires exact queries that will return exact matches.
+
+> **_!Exam question_** - describe the difference between Information Retrieval and Data Retrieval.
+
+The **differences** in properties between data retrieval and information retrieval:
+
+|      **Type**       | **Data retrieval** | **Information retrieval** |
+| :-----------------: | :----------------: | :-----------------------: |
+|       Content       |        Data        |        Information        |
+|     Data object     |       Table        |         Document          |
+|      Matching       |       Exact        |          Partial          |
+|    Items wanted     |      Matching      |         Relevant          |
+|   Query language    |     Artificial     |          Natural          |
+| Query specification |      Complete      |        Incomplete         |
+|        Model        |   Deterministic    |       Probabilistic       |
+|      Structure      |        High        |           Less            |
+
+## High level Architecture <a name="c1"></a>
+
+Elements of a IR-system:
+
+- Document collection
+- Crawler (if this is a Web collection)
+- Indexer
+- Retrieval and ranking process
+  - Query parsing and expansion
+  - System query
+  - Retrieval and ranking
+
+TODO: insert image
+
+A users interaction with the system is either in the form of retrieval or browsing.\
+The retrieval process consists of retrieving documents that satisfy either a user query or a click on a hyperlink. In the last case we say the user is browsing.
+
+> **_!Exam question_** - draw the user interaction diagram.
+
 # Modeling <a name="c1"></a>
 
-## IR Models <a name="c1.1"></a>
+Modeling in Information Retrieval (IR) is a process aimed at producing a ranking function that assigns scores to documents for a given query based on relevance to the query.
 
-Modeling in Information Retrieval (IR) is a process aimed at producing a ranking function that assigns scores to documents for a given query.
+An IR model can be defined by a quadruple: `<D, Q, F, R(q,d)>` where,
 
-Objectives:
+- D = Document collection
+- Q = Query collection reflecting users information needs
+- F = Framework for modeling documents `d`, queries `q`, and their relationship
+- R(q, d) = Ranking function
 
-- Fast (millisecond response time) and fault tolerant.
-- Full-text search.
-- Ordering of documents according to relevance to the user.
-- User-centric presentation of results.
+Some important IR models are:
 
-> An IR model can be defined by a quadruple: `<D, Q, F, R(q,d)>` where
->
-> - D = Document collection
-> - Q = Query collection reflecting users information needs
-> - F = Framework for modeling documents d, queries q, and their relationship
-> - R(q, d) = Ranking function
+TODO: insert links
 
-> - Collection frequency (cf): times term t occurs in collection
-> - Document frequency (df): no. of documents d in which the term t occurs. </br>
->   Naturally: df < cf
+- Boolean model
+- Vector Space model
+- Probabilistic model
+- Language Model
+- BM25
 
 </br></br>
 
-## Classical Similarity Models <a name="c1.2"></a>
-
-> **An index term**: is a word or expression, which may be stemmed, describing or characterizing a document.
->
-> A varaiety of [text operations](#c4) can be done to reduce the number of terms to consider when performing indexing.
-
-</br></br>
+## Weighting
 
 **Term and Document frequency | TF-IDF:**
 
-_[Taken from the wikipendium.](https://www.wikipendium.no/TDT4117_Information_retrieval#term-and-document-frequency-tf-idf)_
+- cf (collection frequency): number of times term `t` occurs in collection
+- df (document frequency): number of documents `d` in which the term `t` occurs.
+- tf (term frequency): number of times term `t` occurs in document `d`
 
-The **raw frequency** of a term in a document is simply how many times it occurs, but the relevance of the document does not increase proportionally with the term frequency (10 more occurrences does not mean 10 times more relevant). **Log frequency** weighting lowers this ratio:
+  Naturally: df < cf
+
+The **raw frequency** of a term in a document (tf) is simply how many times it occurs, but the relevance of the document does not increase proportionally with the term frequency (10 more occurrences does not mean 10 times more relevant). **Log frequency** weighting lowers this ratio:
 
 ![tf_{i,j} = \left{ 
     \begin{array}{rr}
@@ -93,13 +134,12 @@ We want high scores for frequent terms, but we want even higher score for a rare
 Where $N$ is the total number of documents in the collection and $n_i$ is the number of documents which contain keyword $k_i$.
 
 IDF provides a foundation for modern term weighting schemes, and is used for ranking in almost all IR systems. </br>
-**There is 5 distinct variants:**
 
-- Unary
-- Inverse frequency
-- Inverse frequency smooth
-- Inverse frequency max
-- Probabilistic inverse frequency
+A good index term is charachterized by how well it represents the document, how well it relates to the subject, and the degree of discimination.
+
+> **_!Exam question_** - Explain IDF
+>
+> **_!Exam question_** - Explain the characterisics of a good index term
 
 </br>
 
@@ -119,11 +159,21 @@ If we combine these two scores we get the best known weighting scheme in IR: **t
 
 </br>
 
-### Boolean model <a name="c1.2.1"></a>
+## Boolean Model <a name="c1.2.1"></a>
 
 </br>
 
 **Basic Assumption of Boolean Model**:
+
+|         Pros         |                 Cons                  |
+| :------------------: | :-----------------------------------: |
+|        Simple        |          No partial matching          |
+|  Easy to understand  |              No ranking               |
+|  Result predictable  |      May not consider semantics       |
+| Efficient processing |    Query formulation is difficult     |
+|                      | Simple queries usually dont work well |
+
+**Basic principle:**
 
 1. An index term is either present(1) or absent(0) in the document
 2. All index terms provide equal evidence with respect to information needs.
@@ -134,19 +184,21 @@ If we combine these two scores we get the best known weighting scheme in IR: **t
 
 Uses a `term-document` matrix to find matches in the queries.
 
-Important drawback using this (basic boolean) model:
-
-1. There is no ranking.
-2. There is no partial matching.
-3. The ratio between no. of columns (vocabulary) and actually used words (1’s in the matrix) is very low. This will result in a matrix with a LOT of 0’s, and therefore a lot of memory usage, storing no useful information. In practice we therefore only save the entries having 1’s in a form of adjacency list.
+The ratio between no. of columns (vocabulary) and actually used words (1’s in the matrix) is very low. This will result in a matrix with a LOT of 0’s, and therefore a lot of memory usage, storing no useful information. In practice we therefore only save the entries having 1’s in a form of adjacency list.
 
 </br>
 
-### Vector Space model <a name="c1.2.2"></a>
+## Vector Space Model <a name="c1.2.2"></a>
 
 </br>
 
-> **_Statistical term specificity:_** the inverse of the number of documents in which the term occurs. </br> > **_Zipf’s law:_** model of distribution of terms in a collection.
+|          Pros           |            Cons             |
+| :---------------------: | :-------------------------: |
+| Simple, easy to compute | Does not consider semantics |
+|    Partial matching     |   Similarity != relevance   |
+|         Ranking         |                             |
+|     Query expansion     |                             |
+| Easy query formulation  |                             |
 
 The **Ranking** in the Vector Space model is done by modeling the query and documents as vectors. The similarity between a query and a document is calculated with the **Cosine Similarity**:
 
@@ -156,18 +208,20 @@ The **Ranking** in the Vector Space model is done by modeling the query and docu
 
 This basically measures how much the query vector and the document vector are "pointing in the same direction".
 
-**Problem:** longer documents are more likely to be retrieved by a given query due to the number of words. </br>
-**Solution:** document length normalization.
+A **Problem:** is that longer documents are more likely to be retrieved by a given query due to the number of words. The **Solution:** document length normalization.
 
-> Document length normalization adjusts the term frequency or the relevance score in order to normalize the effect of document length on the document ranking.
-
-The **disadvantage** of the model is that it assumes all terms are independent.
+**Document length normalization** adjusts the term frequency or the relevance score in order to normalize the effect of document length on the document ranking.
 
 </br>
 
-### Probabilistic model <a name="c1.2.3"></a>
+## Classical Probabilistic Model <a name="c1.2.3"></a>
 
-_[Taken from the wikipendium.](https://www.wikipendium.no/TDT4117_Information_retrieval#term-and-document-frequency-tf-idf)_
+|            Pros            |                 Cons                  |
+| :------------------------: | :-----------------------------------: |
+| Ranks based on probability |  Needs to guess the initial ranking   |
+|  Theoretically justified   |      Does not consider semantics      |
+|                            | Optimally requires relevance feedback |
+|                            |    May not work better in practice    |
 
 There exists a subset of the documents collection that are relevant to a given query. A probabilistic retrieval model ranks this set by the probability that the document is relevant to the query. The advantage of this model is that documents are ranked in decreasing order of their probability of being relevant. The main disadvantage is the need to guess the initial separation of documents into relevant and non-relevant sets.
 
@@ -181,10 +235,14 @@ There exists a subset of the documents collection that are relevant to a given q
 
 ## Alternative Probabilistic Models <a name="c1.3"></a>
 
-_[Taken from the wikipendium.](https://www.wikipendium.no/TDT4117_Information_retrieval#term-and-document-frequency-tf-idf)_
-</br>
-
 ### BM25 <a name="c1.3.1"></a>
+
+|               Pros               |            Cons             |
+| :------------------------------: | :-------------------------: |
+| Based on The Probabilistic Model |  Lots of hacks/heuristics   |
+|            Efficient             | Hard to improve and develop |
+| Often better results than TF-IDF | Estimation is not the best  |
+|                                  | Does not consider semantics |
 
 Extends the classic probabilistic model with information on term frequency and document length normalization. The ranking formula is a combination of the equation for BM11 and BM15, and can be written as
 
@@ -204,6 +262,10 @@ where $N$ is the total number of documents in the collection, and $n(q_i)$ is th
 
 ### Language Model <a name="c1.3.2"></a>
 
+| Pros | Cons |
+| :--: | :--: |
+|      |      |
+
 Language modeling (LM) is the use of various statistical and probabilistic techniques to determine the probability of a given sequence of words occurring in a sentence. The idea is to define a language model for each document in the collection and use it to inquire about the likelihood of generating av given query, instead of using the query to predict the likelihood of observing a document.
 
 Example:
@@ -222,7 +284,7 @@ To solve this we need to smooth the estimates.
 
 </br>
 
-#### **Jelinek-Mercer smoothing:**
+### **Jelinek-Mercer smoothing:**
 
 𝑝(𝑞|𝑑,𝐶) = 𝜆 ∙ 𝑝(𝑞|𝑀<sub>𝑑</sub>) + (1 − 𝜆) ∙ 𝑝(𝑞|𝑀<sub>c</sub>)
 
@@ -253,7 +315,7 @@ Ranking: 𝑑<sub>2</sub> > 𝑑<sub>1</sub>.
 
 </br>
 
-#### **Dirichlet smoothing:**
+### **Dirichlet smoothing:**
 
 The background distribution P(t|M<sub>c</sub>) if the prior for P(t|𝑑).
 
@@ -261,19 +323,15 @@ TODO: Formula
 
 </br>
 
-> For long queries, the Jelinek-Mercer smoothing performs better than
-> the Dirichlet smoothing.
+For long queries, the Jelinek-Mercer smoothing performs better than the Dirichlet smoothing.
 
-> For short queries, the Dirichlet smoothing performs better than the
-> Jelinek-Mercer smoothing
+For short queries, the Dirichlet smoothing performs better than the Jelinek-Mercer smoothing
 
 </br></br></br>
 
 # Retrieval Evaluation <a name="c2"></a>
 
 User satisfaction can only be measured by relevance to an information need, not by relevance to queries
-
-## **Evaluation of Answer Sets**
 
 ### **Precision & Recall**
 
@@ -282,17 +340,17 @@ TODO: picture from https://en.wikipedia.org/wiki/Precision_and_recall
 **Precision** is the fraction of retrieved documents that are relevant. \
 _Precision_=P(relevant|retrieved)
 
-> Can be calculated by `P = TP / (TP+FP)`
+Can be calculated by `P = TP / (TP+FP)`
 
 **Recall** is the fraction of relevant documents that are retrieved. \
 _Recall_=P(retrieved|relevant)
 
-> Can be calculated by `R = TP / (TP+FN)`
+Can be calculated by `R = TP / (TP+FN)`
 
-> TP = True Positive (for a retrieved document)\
-> FP = False positive (for a retrieved document)\
-> FN = False negative (for a non-retrieved document)\
-> TN = True negative (for a non-retrieved document)
+TP = True Positive (for a retrieved document)\
+FP = False positive (for a retrieved document)\
+FN = False negative (for a non-retrieved document)\
+TN = True negative (for a non-retrieved document)
 
 Trade off:
 
@@ -304,6 +362,8 @@ Trade off:
   very low recall.
 
 When dealing with **ranked lists** you compute the measures for each of the returned documents, from the most relevant to the least (by their ranking; top 1, top 2, etc.) This gives you the precision-recall-curve. The **interpolation** of this result is simply to let each precision be the maximum of all future points. This removes the "jiggles" in plot, and is necessary to compute the precision at recall-level 0. A recall-level is typicall a number from 0 to 10 where 0 means recall = 0 and 10 means recall = 100 %.
+
+> **_!Exam question_** - Explain the precision-recall graph and interpolation
 
 Precision and recall are complementary values and should always be reported together. If reported separate it is easy to make one value arbitrarily high.
 
@@ -320,6 +380,8 @@ Combining precision and recall provides us with the **F-measure** (Harmonic Mean
 
 We use harmonic mean because when two numbers differ greatly, the HM is closer to the minimum than their Arithmetic Mean. This will reduce the score when precision and recall differs greatly.
 
+> **_!Exam question_** - Explain F-measure
+
 </br>
 
 ### **Accuracy**
@@ -328,7 +390,7 @@ The fraction of decisions (relevant/non-relevant) that are correct.
 
 `Accuracy = (TP + TN) / (TP + FP + FN + TN)`
 
-> Accuracy is considered a bad measurement for performance in IR models due to increased score when the number of non-relevant, non-retrieved documents increase.
+Accuracy is considered a bad measurement for performance in IR models due to increased score when the number of non-relevant, non-retrieved documents increase.
 
 ## **Single Value Summaries**
 
@@ -346,6 +408,19 @@ Precision at 5 (P@5) and at 10 (P@10) measure the precision when 5 or 10 documen
 ![FMeasure](./img/MAPformula.JPG)
 
 The idea here is to average the precision figures obtained after each new relevant document is observed.
+
+- MAP is the average precision of a retrieval system.
+- MAP is calculated by dividing the number of relevant documents by the total number of documents.
+
+<br>
+
+Proceedure:
+
+```
+1. Calculate the precision for each document.
+2. Find the average of all the precisions for each document.
+3. MAP is the average of all the precisions in all the documents.
+```
 
 For relevant documents not retrieved, the precision is set to 0.
 
@@ -430,6 +505,8 @@ The Rocchito model is based on the Vector Space Model and the basic idea is to r
   space, and
 - Away from the neighborhood of the non-relevant documents.
 
+> **_!Exam question_** - Explain the Rocchio method
+
 </br>
 
 ### Probabilistic model
@@ -443,7 +520,7 @@ For the initial search (when there are no retrieved documents yet), assumptions 
 
 The same query terms are re-weighted using feedback information provided by the user
 
-> Notice that here, contrary to the Rocchio Method, no query expansion occurs.
+Notice that here, contrary to the Rocchio Method, no query expansion occurs.
 
 The main advantage of this feedback method is the derivation of new weights for the query terms.\
 The disadvantages include:
@@ -498,6 +575,8 @@ Based on the idea that two terms with similar neighborhoods have some synonymy r
 
 For instance, the cosine of the angle between the two vectors is a popular scalar similarity measure.
 
+> **_!Exam question_** - Explain scalar cluster and local analysis.
+
 ### **Neighbor terms**
 
 The higher the number of documents in which the terms w<sub>u</sub> and w<sub>v</sub> co-occur, the stronger this correlation. Correlation strengths can be used to define local clusters of neighbor terms. \
@@ -518,7 +597,7 @@ Of these three steps, the second one is the most complex and is computed as foll
 
 TODO: formula
 
-> It has been adjusted for operation with TREC data and did not work so well with a different collection. It is important to have in mind that tuning might be required for operation with a different collection.
+It has been adjusted for operation with TREC data and did not work so well with a different collection. It is important to have in mind that tuning might be required for operation with a different collection.
 
 ## Global analysis
 
@@ -546,6 +625,8 @@ During the preprocessing phase one might apply one or more of the operations bel
 - **Thesaurus:** Provides a vocabulary of synonyms in the form of relationships between words. This helps the indexer and the searcher chose the same terms or phrases for a given concept, and thus aiding in returning relevant data
 - **Text compression:**
 
+> **_!Exam question_** - describe the text operations.
+
 ## Lexical analysis
 
 - **Normalization:** remove apostrophes, periods, and commas. Also convert to lowercase.
@@ -567,8 +648,11 @@ Affix removal is the most intuitive, simple and effective and is the focus of th
 
 This might hurt precision as you might stem two non-semantically related words with the same root form. (Stemming ~ Lemmatization -> reducing to leximes).
 
-- Reduces size
-- Hurts precision because users can no longer target just a particular form
+- Reduces size and might increase recall.
+- May hurt precision because users can no longer target just a particular form
+- The benefits vs cost are widely discussed in the community. Stemming is, in practice not used by most modern IR-systems.
+
+> **_!Exam question_** - Explain why stemming might be a waste of time.
 
 ## Thesauri
 
@@ -685,12 +769,37 @@ A signature file uses a **hash function** (or «signature») that maps word bloc
 
 To **search** a signature file you hash a word to get a bit mask, then compare that mask with each bit mask of all the text blocks. Collect the candidate blocks and perform a sequential search for each.
 
+signature is used to determine if a word is contained in a block of text.
+
+<br>
+
+Proceedure:
+
+```
+1. Assign a unique hash value to each index-word in the text (eg. using 8 bits).
+2. Split the text into blocks of text (eg. 5 words in each block).
+3. Perform bitwise OR on all the indexable word values in the block.
+4. The result of the OR is the signature of the block.
+5. By running bitwise AND on a word and all the signatures, we can determine which blocks contains the word.
+```
+
 ## 9.4 Suffix Trees and Suffix Arrays
 
 **Suffix trees**
 This is a structure used to index, like the Inverted Index , when dealing with _large alphabets_ (Chinese Japanese, Korean), _agglutinating languages_ (Finnish, German).
 A **Suffix trie** is an ordered tree data structure built over the suffixes of a string. A **Suffix tree** is a compressed trie. And a **Suffix array** is a «flattened» tree.
 These structures handles the whole text as a string, dividing it into suffixes. Either by character or word. Each suffix is from its start point to the end of the text, making them smaller and smaller.
+
+Proceedure:
+
+```
+1. Construct the suffix-strings and find find the position of the index-words.
+2. Sort the suffix-index-words by alphabetical order.
+3. Draw the tree and array.
+```
+
+TODO: Draw the tree and array.
+
 e.g.:
 
 - mississippi (1)
@@ -745,6 +854,13 @@ Problems with centralized architecture:
 
 ### Distributed architecture:
 
+| Pros |                                  Cons                                  |
+| :--: | :--------------------------------------------------------------------: |
+|      |          Requires coordination between gatherers via brokers           |
+|      | Rarely used -> less is put into development and increasing efficiency. |
+
+> **_!Exam question_** - Distributed vs Centralized architecture
+
 ![Distributed architecture](img/DistributedSearchEngine.jpg)
 
 Based on two elements:
@@ -756,6 +872,8 @@ Based on two elements:
   - Broker to broker.
 
 ## Ranking
+
+> **_!Exam question_** - Describe ranking methods
 
 **Ranking using hyperlinks information:**
 
@@ -794,10 +912,10 @@ Result: Better precision.
 
 ![PageRank](img/PageRank.jpg)
 
-> T: total nr pages on the web graph, q is typically 0.15.\
-> PR(pi) is normalized by L(pi)\
+T: total nr pages on the web graph, q is typically 0.15.\
+PR(pi) is normalized by L(pi)\
 
-> Higher score means higher ranking.
+Higher score means higher ranking.
 
 Main differences between HITS and PageRank:
 HITS is based on returned results from the query while as page rank is based on a global ranking based on the ranking of other pages but independent of the query.
@@ -806,9 +924,13 @@ HITS is based on returned results from the query while as page rank is based on 
 
 # Multimedia Information Retrieval <a name="c7"></a>
 
+> **_!Exam question_** - Explain challanges of multimedia information retrieval vs text information retrieval
+
 </br></br></br>
 
 ## Image Retrieval <a name="c7.1"></a>
+
+> **_!Exam question_** - Explain and perform a histogram comparison
 
 </br></br>
 
