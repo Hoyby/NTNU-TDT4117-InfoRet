@@ -132,7 +132,9 @@ The **raw frequency** of a term in a document (tf) is simply how many times it o
         0 \quad \text{otherwise}
     \end{array} \right.$$ -->
 
-_The logarithm base is not important, just be concise with the choice._
+f<sub>i,j</sub> where `i` is the frequency of a term , in the `j` document
+
+_The logarithm base is not important, just be concise with the choice (e.g. 2)._
 
 ### IDF
 
@@ -229,9 +231,33 @@ The ratio between the number of terms and actually used words (1’s in the matr
 
 <!-- $$ sim(d_j , q) = \frac{\vec{d_j} \cdot \vec{q}}{\left|\vec{d_j}\right|\left|\vec{q}\right|} = \frac{\sum _{i=1}^t w_{ij}\cdot w_{iq} }{\sqrt{\sum _{i=1}^tw_{ij}^2}\cdot \sqrt{\sum _{i=1}^tw_{iq}^2}} $$ -->
 
-A **Problem:** is that longer documents are more likely to be retrieved by a given query due to the number of words. The **Solution:** document length normalization.
+Example of calculation:
+
+```
+D1 = "George Bush is former American President, but he is still called president"
+D2 = "President Barack Obama's presidential period will soon be over, and yet another Bush may well become a new president"
+Q = "american president bush"
+
+1. Find all the index terms (K) on the collection, and perform the nessecary text operations:
+    K= {america, barack, bush, george, obama, period, president}
+
+2. Using raw frequency for weighting we get the vectors (could also apply log):
+    D1 = [1, 0, 1, 1, 0, 0, 2]
+    D2 = [0, 1, 0, 0, 1, 1, 3]
+     Q = [1, 0, 1, 0, 0, 0, 1]
+
+3. Calculate the cosine similarity between the documents and the query:
+    sim(D1, Q) = (1*1 + 1*1 + 2*1)/(sqrt(1^2 + 1^2 + 1^2 + 2^2) * sqrt(1^2 + 1^2 + 1^2)) = 0.87
+    sim(D2, Q) = (3*1)/sqrt(1^2 + 1^2 + 1^2 + 3^2) * sqrt(1^2 + 1^2 + 1^2) = 0.5
+
+    D1 in this case will be ranked higher than D2
+```
+
+A **Problem:** is that longer documents are more likely to be retrieved by a given query due to the number of words. The **solution** is document length normalization.
 
 **Document length normalization** adjusts the term frequency or the relevance score in order to normalize the effect of document length on the document ranking.
+
+> **_!Exam question_** - Use Sim(d,q) to calculate the similarity between a document and a query.
 
 </br>
 
@@ -259,12 +285,12 @@ There exists a subset of the documents collection that are relevant to a given q
 
 ### BM25 <a name="c1.3.1"></a>
 
-|               Pros               |               Cons                |
-| :------------------------------: | :-------------------------------: |
-| Based on The Probabilistic Model | Assumes all terms are independent |
-|         Partial matching         |    Estimation is not the best     |
-|                                  |                                   |
-|                                  |                                   |
+|                 Pros                 |               Cons                |
+| :----------------------------------: | :-------------------------------: |
+|   Based on The Probabilistic Model   | Assumes all terms are independent |
+|           Partial matching           |    Estimation is not the best     |
+| Considers the lenght of the document |                                   |
+|                                      |                                   |
 
 Extends the classic probabilistic model with information on term frequency and document length normalization. The ranking formula is a combination of the equation for BM11 and BM15, and can be written as
 
@@ -317,14 +343,14 @@ To solve this we need to smooth the estimates.
 
 - Mixes the probability from the document with the general collection
   frequency of the word
-- High value of λ: “conjunctive-like” search – tends to retrieve documents
+- High value of λ: “conjunctive-like" search – tends to retrieve documents
   containing all query words.
 - Low value of λ: more disjunctive, suitable for long queries
 - Tuning λ is very important for good performance.
 
 **Mixture model:**
 
-- The user has some background knowledge about the collection and has a “document in mind” and generates the query from this document.
+- The user has some background knowledge about the collection and has a “document in mind" and generates the query from this document.
 
 ![image](./img/MixtureModel.JPG)
 
@@ -362,7 +388,7 @@ User satisfaction can only be measured by relevance to an information need, not 
 
 Evaluation scores are used to evaluate the performance of a IR-system.
 
-TODO: Write about TREC and GOV2
+In addition to the evaluation scores, we have test collections that can be used to evaluate the performance of the system. Examples are the [TREC](https://trec.nist.gov/) collection which provides a set of documents, a set of information need descriptions, and a set relevance judgements made by human specialists.
 
 ### **Precision & Recall**
 
@@ -385,10 +411,10 @@ TN = True negative (for a non-retrieved document)
 
 Trade off:
 
-- You can increase recall by returning more documents.
+- You can increase recall by returning more documents. A system that returns all docs has 100% recall!
 - Recall is a non-decreasing function of the number of documents
   retrieved.
-- A system that returns all docs has 100% recall!
+- Does not take the user and their needs into consideration (see User-Oriented Measures).
 - The converse is also true (usually): It’s easy to get high precision for
   very low recall.
 
@@ -628,7 +654,7 @@ Terms in a same cluster is called neighbor terms and can then be used for query 
 Query expansion is important because it tends to improve recall. It may however, come at the cost of precision as you would have a larger collection of documents.\
 Thus, query expansion needs to be exercised with great care and fine tuned for the collection at hand.
 
-### **Local Context Analysis**
+## Automatic Local Analysis (ALA)
 
 Local context analysis procedure operates in three steps:
 
@@ -636,17 +662,15 @@ Local context analysis procedure operates in three steps:
 2. For each concept c in the passages compute the similarity sim(q, c) between the whole query q and the concept c.
 3. The top m ranked concepts, according to sim(q, c), are added to the original query q.
 
-Of these three steps, the second one is the most complex and is computed as follows:
-
-TODO: formula
-
 It has been adjusted for operation with TREC data and did not work so well with a different collection. It is important to have in mind that tuning might be required for operation with a different collection.
 
-## Global analysis
+## Automatic Global analysis (AGA)
 
 Determine term similarity through a pre-computed statistical analysis on the complete collection. Expand queries with statistically most similar terms. Two methods: Similarity Thesaurus and Statistical Thesaurus. (A thesaurus provides information on synonyms and semantically related words and phrases.) Increases recall, may reduce precision.
 
 Terms for expansion are selected based on their similarity to the whole query.
+
+> **_!Exam question_** - Explain the main differences between ALA and AGA.
 
 ### Similarity Thesaurus
 
@@ -755,6 +779,12 @@ The tree has degree 256 instead of 2 and symbols are typically represented by <=
 </br></br></br>
 
 # Indexing and Searching <a name="c5"></a>
+
+Indexing is the process of creating a data structure that can be used to efficiently search for a given term.
+
+Different datastrucures have different advantages and disadvantages. Some examples are inverted index, suffix tree, trie, array, or signature file (hash table).
+
+> **_!Exam question_** - Explain the different indexing methods.
 
 ## Inverted Indexes
 
@@ -873,6 +903,8 @@ Problems with the data:
 - Quality of data (poorly written, invalid, misspelling)
 - Heterogeneous data (languages, formats, types of data)
 
+> **_!Exam question_** - Explain the challanges of web search.
+
 ## Search engines:
 
 ### Centralized architecture:
@@ -902,17 +934,17 @@ Problems with centralized architecture:
 |      |          Requires coordination between gatherers via brokers           |
 |      | Rarely used -> less is put into development and increasing efficiency. |
 
-> **_!Exam question_** - Distributed vs Centralized architecture
-
 ![Distributed architecture](img/DistributedSearchEngine.jpg)
 
 Based on two elements:
 
-- Gatherers: Peridodically collect and extract index data from the web servers.
+- Gatherers: Peridodically collect and extract index data from the web servers (like a crawler).
 - Brokers: Retrieve data from gatherers and update incrementally their indences.
 - Gatherers and Brokers communitcation is very flexible:
   - gatherer to multiple brokers.
   - Broker to broker.
+
+> **_!Exam question_** - Distributed vs Centralized architecture
 
 ## Ranking
 
@@ -967,11 +999,85 @@ HITS is based on returned results from the query while as page rank is based on 
 
 # Multimedia Information Retrieval <a name="c7"></a>
 
+![Multimedia](img/Multimedia_model.jpg)
+
 > **_!Exam question_** - Explain challanges of multimedia information retrieval vs text information retrieval
 
 </br></br></br>
 
 ## Image Retrieval <a name="c7.1"></a>
+
+There are two approaches to image retrieval: Text-Based (TBIR) and Content-Based (CBIR).
+
+In **Text-Based Image Retrieval** the features are annotation (tags), made either by people or automatically. The perception of an image is subjective and the annotations can vary (be imprecise). On the other hand, it is easy to capture high level abstractions and concepts, like «smile» and «sunset».
+
+**Content-Based Image Retrieval** is the task of retrieving images based on their contents. This is done by extracting one or several visual features and then use the corresponding representations in a matching procedure. To illustrate, consider the task of finding similar images to one that the user queries (Query By Example). This method ignores semantics and uses features like color, texture and shape. Color-Based Retrieval can represent the image with a color histogram. This will be independent of e.g resolution, focal point and pose, and the retrieval process is to compare the histograms. Texture-Based Retrieval extracts the repetitive elements in the image and uses this as a feature.
+
+Feature extraction is the process of extracting identifiable properties from an image.
+
+Features can be:
+
+- Color histogram
+- Color layout
+- Texture
+- Shapes
+
+It is also possible to calculate differences between images, based on these features.
+
+There are some disadvantages to using some of these features and their similarities, like that it might be hard to consider two colors that are similar but different, especially if the image contains noise and changing illumination.
+
+The **solution** to this problem might be to take into account the perceptual differences when calculating the similarity between images.
+
+### Histogram matching:
+
+Maching can be done using the following formula:
+
+![Histogram matching](img/HistogramMatching.JPG)
+
+Example:
+
+```
+Picture A:  2 red
+            3 green
+            4 blue
+
+Picture B:  4 red
+            3 green
+            2 blue
+
+d(I,H) = |2-4| + |3-3| + |4-2| = 2 + 0 + 2 = 4
+
+The difference is 4.
+
+------------------------------------------------------------------
+
+Consider now:
+Picture B:  4 red
+            3 green
+            2 yellow
+
+d(I,H) = |2-4| + |3-3| + |4-0| + |0-2| = 2 + 0 + 4 + 2 = 8
+
+The difference is now 8 due to the difference in yellow and blue.
+
+```
+
+### Shapes
+
+Shapes can be represented by a binary string.
+
+Take for example the following image:
+
+![Shapes](img/Shape.JPG)
+
+The binary representation of the image would be
+11100000
+11111000
+01111110
+01111111
+.
+
+Based on this, one can calculate the similarity between two shapes.
 
 > **_!Exam question_** - Explain and perform a histogram comparison
 
