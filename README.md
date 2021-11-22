@@ -320,7 +320,7 @@ where $f(q_i, D)$ is $q_i$'s term frequency in the document $D$, $|D|$ is the le
 
 <!-- $$ IDF(q_i) = \log \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5} $$ -->
 
-where $N$ is the total number of documents in the collection, and $n(q_i)$ is the number of documents containing $q_i$.
+where `N` is the total number of documents in the collection, and `n(q_i)` is the number of documents containing `q_i`.
 
 </br>
 
@@ -832,19 +832,19 @@ In general, there are three different ways to **maintain** an inverted index:
 - **Incremental updates**, done while searching only and when needed.
 - **Intermittent merge**, new documents are indexed and the new index is merged with the existing. This is, in general, the best solution.
 
-Inverted indexes can be **compressed** in the same way as documents (chapter 6.8). Some popular coding schemes are: _Unary_, _Elias_-$\gamma$, _Elias_-$\delta$ and _Golomb_.
+Inverted indexes can be **compressed** in the same way as documents (chapter 6.8). Some popular coding schemes are: _Unary_, _Elias_-`γ`, _Elias_-`Δ` and _Golomb_.
 
 ### **Heaps’ Law**
 
 Estimates the number of distinct words in a document or collection. Predicting the growth of the vocabulary size. Heaps' law states that as more instance text is gathered, there will be diminishing returns in terms of discovery of the full vocabulary from which the distinct terms are drawn.
 
-$V = Kn^\beta$, where _n_ is the size of the document or collection (number of words), and $10 < K < 100, 0< \beta < 1$
+`V = Kn^β`, where _n_ is the size of the document or collection (number of words), and `10 < K < 100, 0 < β < 1`
 
 ### **Zipf’s law**
 
 Estimates the distribution of word frequencies across documents in the collection (approximate model). Zipf’s law states that the frequency of any word is inversely proportional to its rank in the frequency table. Thus the most frequent word will occur approximately twice as often as the second most frequent word, three times as often as the third most frequent word, etc.
 
-In other words if $t_1$ is the most common word in the collection, $t_2$ the next most common, and so on, then the frequency of $f_i$ of the _i_-th most common word is proportional to $\frac{1}{i}$.
+In other words if t<sub>1</sub> is the most common word in the collection, $t_2$ the next most common, and so on, then the frequency of $f_i$ of the _i_-th most common word is proportional to `1/i`.
 
 **Zipf’s law** to the left, **Heaps’ Law** to the right
 
