@@ -30,7 +30,7 @@
 - [x] [Øving 2](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_2)
 - [x] [Øving 3](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_3)
 - [x] [Øving 4](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_4)
-- [ ] [Øving 5](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_5)
+- [~] [Øving 5](https://github.com/Hoyby/NTNU/tree/master/TDT4117-InfoRet/Assignment_5)
 
 </br></br></br>
 
