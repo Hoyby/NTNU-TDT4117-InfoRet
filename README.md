@@ -3,26 +3,42 @@
 ## Chapters:
 
 1. [_Introduction_](#c0)
-   1. [_High level Architecture_](#c1)
-2. [_Modeling_](#c2)
-   1. [_IR Models_](#c3)
-   2. [_Weighting_](#c4)
-   3. [_Boolean model_](#c5)
-   4. [_Vector Space model_](#c6)
-   5. [_Probabilistic model_](#c7)
-   6. [_Alternative Probabilistic Models_](#c8)
-      1. [_BM25_](#c9)
-      2. [_Language Model_](#c10)
-3. [_Retrieval Evaluation_](#c11)
-   1. [_Precision & Recall_](#c12)
-4. [_Relevance Feedback and Query Expansion_](#c13)
-5. [_Text Operation_](#c14)
-6. [_Indexing and Searching_](#c15)
-7. [_Web Retrieval_](#c16)
-8. [_Multimedia Information Retrieval_](#c17)
-   1. [_Image Retrieval_](#c18)
-   2. [_Video Retrieval_](#c19)
-   3. [_Audio Retrieval_](#c20)
+   1. [_High level Architecture_](#c0.1)
+2. [_Modeling_](#c1)
+   1. [_Weighting_](#c1.1)
+   2. [_Boolean model_](#c1.2)
+   3. [_Vector Space model_](#c1.3)
+   4. [_Classical Probabilistic model_](#c1.4)
+   5. [_Alternative Probabilistic Models_](#c1.5)
+      1. [_BM25_](#c1.5.1)
+      2. [_Language Model_](#c1.5.2)
+3. [_Retrieval Evaluation_](#c2)
+   1. [_Precision & Recall_](#c2.1)
+   1. [_F-Measure_](#c2.2)
+   1. [_Accuracy_](#c2.3)
+   1. [_Single Value Summaries_](#c2.4)
+4. [_Relevance Feedback and Query Expansion_](#c3)
+   1. [_Explicit feedback_](#c3.1)
+   2. [_Implicit feedback_](#c3.2)
+   3. [_Local analysis_](#c3.3)
+   4. [_Automatic Global analysis_](#c3.4)
+5. [_Text Operation_](#c4)
+   1. [_Lexical analysis_](#c4.1)
+   2. [_Stopword removal_](#c4.2)
+   3. [_Stemming_](#c4.3)
+   4. [_Thesaurus_](#c4.4)
+   5. [_Compression_](#c4.5)
+6. [_Indexing and Searching_](#c5)
+   1. [_Inverted Indexes_](#c5.1)
+   1. [_Signature Files_](#c5.2)
+   1. [_Suffix Trees and Suffix Arrays_](#c5.3)
+7. [_Web Retrieval_](#c6)
+   1. [_Search engines_](#c6.1)
+   1. [_Ranking_](#c6.2)
+8. [_Multimedia Information Retrieval_](#c7)
+   1. [_Image Retrieval_](#c7.1)
+   2. [_Video Retrieval_](#c7.2)
+   3. [_Audio Retrieval_](#c7.3)
 
 ## Assignments:
 
@@ -30,11 +46,11 @@
 - [x] [Øving 2](https://github.com/Hoyby/NTNU-TDT4117-InfoRet/tree/master//Assignment_2)
 - [x] [Øving 3](https://github.com/Hoyby/NTNU-TDT4117-InfoRet/tree/master//Assignment_3)
 - [x] [Øving 4](https://github.com/Hoyby/NTNU-TDT4117-InfoRet/tree/master//Assignment_4)
-- [~] [Øving 5](https://github.com/Hoyby/NTNU-TDT4117-InfoRet/tree/master//Assignment_5)
+- [x] [Øving 5](https://github.com/Hoyby/NTNU-TDT4117-InfoRet/tree/master//Assignment_5)
 
 </br></br></br>
 
-# Introduction <a name="c1"></a>
+# Introduction <a name="c0"></a>
 
 Information Retrieval is a field of computer science that deals with the retrieval of information from a large collection of documents. The field is often used in the context of search engines, which are used to find relevant documents for a user’s query and information need.
 
@@ -61,7 +77,7 @@ The **differences** in properties between data retrieval and information retriev
 |        Model        |   Deterministic    |       Probabilistic       |
 |      Structure      |        High        |           Less            |
 
-## High level Architecture <a name="c1"></a>
+## High level Architecture <a name="c0.1"></a>
 
 Elements of a IR-system:
 
@@ -103,7 +119,7 @@ TODO: insert links
 
 </br></br>
 
-## Weighting
+## Weighting <a name="c1.1"></a>
 
 - cf (collection frequency): number of times term `t` occurs in collection
 - df (document frequency): number of documents `d` in which the term `t` occurs.
@@ -172,7 +188,7 @@ If we combine these two scores we get the best known weighting scheme in IR: **t
 
 </br>
 
-## Boolean Model <a name="c1.2.1"></a>
+## Boolean Model <a name="c1.2"></a>
 
 </br>
 
@@ -207,7 +223,7 @@ The ratio between the number of terms and actually used words (1’s in the matr
 
 </br>
 
-## Vector Space Model (VSM) <a name="c1.2.2"></a>
+## Vector Space Model (VSM) <a name="c1.3"></a>
 
 </br>
 
@@ -261,7 +277,7 @@ A **Problem:** is that longer documents are more likely to be retrieved by a giv
 
 </br>
 
-## Classical Probabilistic Model <a name="c1.2.3"></a>
+## Classical Probabilistic Model <a name="c1.4"></a>
 
 |             Pros             |                 Cons                  |
 | :--------------------------: | :-----------------------------------: |
@@ -281,9 +297,9 @@ There exists a subset of the documents collection that are relevant to a given q
 
 </br>
 
-## Alternative Probabilistic Models <a name="c1.3"></a>
+## Alternative Probabilistic Models <a name="c1.5"></a>
 
-### BM25 <a name="c1.3.1"></a>
+### BM25 <a name="c1.5.1"></a>
 
 |                 Pros                 |               Cons                |
 | :----------------------------------: | :-------------------------------: |
@@ -308,7 +324,7 @@ where $N$ is the total number of documents in the collection, and $n(q_i)$ is th
 
 </br>
 
-### Language Model (LM) <a name="c1.3.2"></a>
+### Language Model (LM) <a name="c1.5.2"></a>
 
 |                      Pros                       |                      Cons                       |
 | :---------------------------------------------: | :---------------------------------------------: |
@@ -390,7 +406,7 @@ Evaluation scores are used to evaluate the performance of a IR-system.
 
 In addition to the evaluation scores, we have test collections that can be used to evaluate the performance of the system. Examples are the [TREC](https://trec.nist.gov/) collection which provides a set of documents, a set of information need descriptions, and a set relevance judgements made by human specialists.
 
-### **Precision & Recall**
+## Precision & Recall <a name="c2.1"></a>
 
 ![Precision & Recall](./img/Precisionrecall.svg)
 
@@ -426,7 +442,7 @@ Precision and recall are complementary values and should always be reported toge
 
 </br>
 
-### **F-measure**
+## F-measure <a name="c2.2"></a>
 
 ![FMeasure](./img/FMeasure.JPG)
 
@@ -439,7 +455,7 @@ We use harmonic mean because when two numbers differ greatly, the HM is closer t
 
 </br>
 
-### **Accuracy**
+## Accuracy <a name="c2.3"></a>
 
 The fraction of decisions (relevant/non-relevant) that are correct.
 
@@ -447,7 +463,7 @@ The fraction of decisions (relevant/non-relevant) that are correct.
 
 Accuracy is considered a bad measurement for performance in IR models due to increased score when the number of non-relevant, non-retrieved documents increase.
 
-## **Single Value Summaries**
+## Single Value Summaries <a name="c2.4"></a>
 
 There are situations in which we would like to evaluate retrieval performance over individual queries. One reason is that averaging precision over many queries might disguise important
 anomalies in the retrieval algorithms under study. Another reason is that we might be interested in investigating whether a algorithm outperforms the other for each query.
@@ -548,7 +564,7 @@ The first step can be accomplished in two distinct ways:
 - Obtain the feedback information explicitly from the users.
 - Obtain the feedback information implicitly from the query results or from external sources such as a thesaurus.
 
-## **Explicit feedback**
+## Explicit feedback <a name="c3.1"></a>
 
 Feedback information provided by the users inspecting the retrieved documents.
 Collecting explicit feedback information from users (in the classical way) is expensive and time consuming as the user has to examine and mark the relevant documents (in practice 10-20 top ranked are examined).
@@ -602,7 +618,7 @@ Thus, this method does not in general operate as effectively as the vector modif
 
 </br>
 
-## **Implicit feedback**
+## Implicit feedback <a name="c3.2"></a>
 
 In an implicit relevance feedback cycle, the feedback information is derived implicitly by the system.
 
@@ -611,7 +627,7 @@ There are two basic approaches for compiling implicit feedback information:
 - Local Analysis: which derives the feedback information from the top ranked documents in the result set.
 - Global Analysis: which derives the feedback information from external sources such as a thesaurus.
 
-## Local analysis
+## Local analysis <a name="c3.3"></a>
 
 **Term-Term correlation Matrix**
 
@@ -654,7 +670,7 @@ Terms in a same cluster is called neighbor terms and can then be used for query 
 Query expansion is important because it tends to improve recall. It may however, come at the cost of precision as you would have a larger collection of documents.\
 Thus, query expansion needs to be exercised with great care and fine tuned for the collection at hand.
 
-## Automatic Local Analysis (ALA)
+### Automatic Local Analysis (ALA)
 
 Local context analysis procedure operates in three steps:
 
@@ -664,7 +680,7 @@ Local context analysis procedure operates in three steps:
 
 It has been adjusted for operation with TREC data and did not work so well with a different collection. It is important to have in mind that tuning might be required for operation with a different collection.
 
-## Automatic Global analysis (AGA)
+## Automatic Global analysis (AGA) <a name="c3.4"></a>
 
 Determine term similarity through a pre-computed statistical analysis on the complete collection. Expand queries with statistically most similar terms. Two methods: Similarity Thesaurus and Statistical Thesaurus. (A thesaurus provides information on synonyms and semantically related words and phrases.) Increases recall, may reduce precision.
 
@@ -694,7 +710,7 @@ During the preprocessing phase one might apply one or more of the operations bel
 
 > **_!Exam question_** - describe the text operations.
 
-## Lexical analysis
+## Lexical analysis <a name="c4.1"></a>
 
 - **Normalization:** remove apostrophes, periods, and commas. Also convert to lowercase.
 
@@ -702,13 +718,13 @@ _Numbers_ are of little value alone and should be removed. Combinations of numbe
 
 - Reduces size
 
-## Stopword elimination
+## Stopword removal <a name="c4.2"></a>
 
 Stopwords are words occurring in over 80% of the document collection. These are not good candidates for index terms and should be removed before indexing. (Can reduce the index by 40%) This often includes words as articles, prepositions, conjunctions. Some verbs, adverbs, adjectives. Lists of popular stopwords can be found on the Internet.
 
 - Reduces size
 
-## Stemming
+## Stemming <a name="c4.3"></a>
 
 The idea of stemming is to let any conjugation and plurality of a word produce the same result in a query. This improves the retrieval performance and reduce the index size. There are four types of stemming: _Affix removal, Table Lookup, Successor variety, N-grams_.
 Affix removal is the most intuitive, simple and effective and is the focus of the course, with use of the _Porter Algorithm_.
@@ -721,14 +737,14 @@ This might hurt precision as you might stem two non-semantically related words w
 
 > **_!Exam question_** - Explain why stemming might be a waste of time.
 
-## Thesauri
+## Thesaurus <a name="c4.4"></a>
 
 To assist a user for proper query terms you can construct a Thesauri. This provides a hierarchy that allows the broadening and narrowing of a query. It is done by creating a list of important words in a given domain. For each word provide a set of related words, derived from synonymity relationship.
 
 - Hard to distinguish between concepts that use the same word (apple is both a fruit and a company)
 - Might increase recall without increasing precision, eg. a user inputs a spesific term for the concept, but the thesaurus expands using synonyms providing a bigger set, but not necessarily relevant for the user.
 
-## Compression
+## Compression <a name="c4.5"></a>
 
 ### **Huffman encoding**
 
@@ -786,7 +802,7 @@ Different datastrucures have different advantages and disadvantages. Some exampl
 
 > **_!Exam question_** - Explain the different indexing methods.
 
-## Inverted Indexes
+## Inverted Indexes <a name="c5.1"></a>
 
 **Inverted** means that you can reconstruct the text from the index.
 
@@ -834,7 +850,7 @@ In other words if $t_1$ is the most common word in the collection, $t_2$ the nex
 
 ![huffman tree canonical](img/zipheaplaw.png)
 
-## 9.3 Signature Files
+## Signature Files <a name="c5.2"></a>
 
 Signature files are word-oriented index structures based on hashing. It has a poorer performance than Inverted indexes, since it forces a sequential search over the index, but is suitable for small texts.
 
@@ -856,7 +872,7 @@ Proceedure:
 5. By running bitwise AND on a word and all the signatures, we can determine which blocks contains the word.
 ```
 
-## 9.4 Suffix Trees and Suffix Arrays
+## Suffix Trees and Suffix Arrays <a name="c5.3"></a>
 
 **Suffix trees**
 This is a structure used to index, like the Inverted Index , when dealing with _large alphabets_ (Chinese Japanese, Korean), _agglutinating languages_ (Finnish, German).
@@ -905,7 +921,7 @@ Problems with the data:
 
 > **_!Exam question_** - Explain the challanges of web search.
 
-## Search engines:
+## Search engines <a name="c6.1"></a>
 
 ### Centralized architecture:
 
@@ -946,7 +962,7 @@ Based on two elements:
 
 > **_!Exam question_** - Distributed vs Centralized architecture
 
-## Ranking
+## Ranking <a name="c6.2"></a>
 
 > **_!Exam question_** - Describe ranking methods
 
